@@ -10,7 +10,7 @@
 #import "DSScoreBarView.h"
 
 @interface DSRootViewController ()
-@property (nonatomic, strong) DSScoreBarView *scoreBarView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @end
 
 @implementation DSRootViewController
@@ -18,24 +18,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self setupScrollView];
+    [self configureScrollView];
 }
 
-- (void)setupScrollView {
+- (void)configureScrollView {
     
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-    [scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.view.bounds), 5000)];
-    
-    self.scoreBarView = [[DSScoreBarView alloc] initWithFrame:CGRectMake(10, 470, CGRectGetWidth(scrollView.bounds) - 20, 70)];
-    [scrollView addSubview:_scoreBarView];
-    
-    [self.view addSubview:scrollView];
+    [_scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.view.bounds), 5000)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self.scoreBarView fillBar];
+    NSInteger index = 0;
+    for (UIView *subview in _scrollView.subviews) {
+        if ([subview isKindOfClass:[DSScoreBarView class]]) {
+            CFTimeInterval delay = index * 0.2;
+            [(DSScoreBarView *)subview fillBarWithDelay:delay];
+            index++;
+        }
+    }
 }
 
 @end

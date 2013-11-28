@@ -15,23 +15,38 @@
 
 @implementation DSScoreBarView
 
+#pragma mark - Initialisers
 - (id)initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
     if (self) {
-        
-        [self setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1.0]];
-        [self setupScoreBarLayer];
+        [self commonInit];
     }
     
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self commonInit];
+    }
+    
+    return self;
+}
+
+- (void)commonInit {
+    
+    [self setBackgroundColor:[UIColor colorWithWhite:0.98 alpha:1.0]];
+    [self setupScoreBarLayer];
 }
 
 #pragma mark - Setup
 - (void)setupScoreBarLayer {
     
     self.scoreBarLayer = [CALayer layer];
-    [_scoreBarLayer setBounds:CGRectMake(0, 0, 40, CGRectGetHeight(self.bounds))];
+    [_scoreBarLayer setBounds:CGRectMake(0, 0, 0, CGRectGetHeight(self.bounds))];
     [_scoreBarLayer setAnchorPoint:CGPointMake(0.0f, 0.5f)];
     [_scoreBarLayer setPosition:CGPointMake(0.0f, floorf(CGRectGetHeight(self.bounds)/2))];
     [_scoreBarLayer setBackgroundColor:[UIColor colorWithWhite:0.7 alpha:1.0].CGColor];
@@ -40,10 +55,11 @@
 }
 
 #pragma mark - Animate
-- (void)fillBar {
+- (void)fillBarWithDelay:(CFTimeInterval)delay {
     
-    CABasicAnimation *animation = [self animationToExtendBoundsOfLayer:self.scoreBarLayer];
-    [self.scoreBarLayer addAnimation:animation forKey:nil];
+    CABasicAnimation *animation = [self animationToExtendBoundsOfLayer:_scoreBarLayer];
+    [animation setBeginTime:CACurrentMediaTime() + delay];
+    [_scoreBarLayer addAnimation:animation forKey:@"fillBarAnimation"];
 }
 
 #pragma mark - Animation Helper
@@ -56,9 +72,14 @@
     [changeBoundsAnimation setFromValue:[NSNumber numberWithFloat:fromValue]];
     [changeBoundsAnimation setToValue:  [NSNumber numberWithFloat:toValue]];
     [changeBoundsAnimation setDuration:10.0];
-    [layer setBounds:self.bounds];
+    [changeBoundsAnimation setFillMode:kCAFillModeForwards];
+    [changeBoundsAnimation setRemovedOnCompletion:NO];
     
     return changeBoundsAnimation;
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    [_scoreBarLayer removeAnimationForKey:@"fillBarAnimation"];
 }
 
 @end

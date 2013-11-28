@@ -10,6 +10,6 @@
 
 @interface DSScoreBarView : UIView
 
-- (void)fillBar;
+- (void)fillBarWithDelay:(NSTimeInterval)delay;
 
 @end
