@@ -78,6 +78,7 @@
     return changeBoundsAnimation;
 }
 
+#pragma mark - Animation Delegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     [_scoreBarLayer removeAnimationForKey:@"fillBarAnimation"];
 }

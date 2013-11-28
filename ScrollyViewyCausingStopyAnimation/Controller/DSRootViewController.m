@@ -22,7 +22,6 @@
 }
 
 - (void)configureScrollView {
-    
     [_scrollView setContentSize:CGSizeMake(CGRectGetWidth(self.view.bounds), 5000)];
 }
 
