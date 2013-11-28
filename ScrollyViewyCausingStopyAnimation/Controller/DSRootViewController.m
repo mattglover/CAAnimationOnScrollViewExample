@@ -31,7 +31,7 @@
     NSInteger index = 0;
     for (UIView *subview in _scrollView.subviews) {
         if ([subview isKindOfClass:[DSScoreBarView class]]) {
-            CFTimeInterval delay = index * 0.2;
+            CFTimeInterval delay = index * 0.4;
             [(DSScoreBarView *)subview fillBarWithDelay:delay];
             index++;
         }
