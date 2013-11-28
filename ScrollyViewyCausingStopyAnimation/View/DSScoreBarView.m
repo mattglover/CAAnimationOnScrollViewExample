@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface DSScoreBarView ()
-
+@property (nonatomic, weak) CADisplayLink *displayLink;
 @property (nonatomic, strong) CATextLayer *scoreTextLayer;
 @property (nonatomic, strong) CALayer *scoreBarLayer;
 @end
@@ -79,9 +79,9 @@
     [animation setBeginTime:CACurrentMediaTime() + delay];
     [_scoreBarLayer addAnimation:animation forKey:@"fillBarAnimation"];
     
-    CADisplayLink *displayLink = [NSClassFromString(@"CADisplayLink") displayLinkWithTarget:self selector:@selector(checkScore)];
-    [displayLink setFrameInterval:1];
-    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    self.displayLink = [NSClassFromString(@"CADisplayLink") displayLinkWithTarget:self selector:@selector(checkScore)];
+    [_displayLink setFrameInterval:1];
+    [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 #pragma mark - CADisplayLink Listener
@@ -117,7 +117,9 @@
 
 #pragma mark - Animation Delegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+   
     [_scoreBarLayer removeAnimationForKey:@"fillBarAnimation"];
+    [_displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 #pragma mark - CGSize Helper
@@ -126,7 +128,6 @@
 }
 
 #pragma mark - Color Helper
-
 - (CGColorRef)colorForPercentComplete:(float)percentComplete {
     if (percentComplete < 33) {
         return [UIColor greenColor].CGColor;
