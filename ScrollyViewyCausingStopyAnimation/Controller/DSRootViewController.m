@@ -28,14 +28,12 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    NSInteger index = 0;
-    for (UIView *subview in _scrollView.subviews) {
+    [_scrollView.subviews enumerateObjectsUsingBlock:^(UIView *subview, NSUInteger idx, BOOL *stop) {
         if ([subview isKindOfClass:[DSScoreBarView class]]) {
-            CFTimeInterval delay = index * 0.4;
+            CFTimeInterval delay = idx * 0.4;
             [(DSScoreBarView *)subview fillBarWithDelay:delay];
-            index++;
         }
-    }
+    }];
 }
 
 @end
